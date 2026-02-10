@@ -1,233 +1,316 @@
-<div align="center">
-    <a href="https://londonappdeveloper.com" target="_blank">
-        <img src="https://londonappdeveloper.com/wp-content/uploads/2024/11/banner.svg" alt="Banner image" />
-    </a>
-</div>
+# DevOps Deployment Automation — Terraform, AWS, Docker, and ECS
 
-<div align="center">
-    <p>Full-Stack Consulting and Courses.</p>
-    <a href="https://londonappdeveloper.com" target="_blank">Website</a> |
-    <a href="https://londonappdeveloper.teachable.com/" target="_blank">Courses</a> |
-    <a href="https://londonappdeveloper.com/tutorials/" target="_blank">Tutorials</a> |
-    <a href="https://londonappdeveloper.com/consulting/" target="_blank">Consulting
-</div>
+This project demonstrates an end-to-end DevOps deployment workflow using Terraform, AWS, Docker, and CI/CD automation. It provisions cloud infrastructure using Infrastructure-as-Code, containerizes a Django REST API, and deploys it to AWS container services through automated workflows.
 
-<br /><br >
+The system is designed to showcase repeatable infrastructure provisioning, containerized application delivery, and deployment automation practices aligned with DevOps and SRE principles.
 
-# DevOps Deployment Automation with Terraform, AWS and Docker - Starter Code
+Originally built through guided DevOps training and extended into a portfolio project with additional documentation, architecture explanation, and operational run procedures.
 
-This project contains the starter code for our course: [DevOps Deployment Automation with Terraform, AWS and Docker](https://londonapp.dev/c3).
+---
 
-It contains the code you should have by the end of our [Build a Backend REST API with Python & Django REST Framework - Advanced](https://londonapp.dev/c2) course. We've created this snapshot, in-case we update the aforementioned course in the future.
+## 🚀 What This Project Demonstrates
 
-## Local Development
+- Infrastructure provisioning with Terraform
+- Modular Infrastructure-as-Code structure
+- Containerized Django REST API deployment
+- Docker-based local development workflow
+- AWS container service deployment (ECS)
+- Container registry integration (ECR)
+- CI/CD pipeline automation
+- Remote Terraform execution via containers
+- Secure AWS CLI authentication using aws-vault
+- Reproducible environment setup
 
-### Running Project
+---
 
-This project runs using Docker. It should work consistently on Windows, macOS or Linux machines.
+## 🧰 Technology Stack
 
-Follow the below steps to run a local development environment.
+**Infrastructure & Cloud**
+- Terraform
+- AWS (ECS, ECR, IAM, Networking, RDS)
 
-1.  Ensure you have the following installed:
+**Containers**
+- Docker
+- Docker Compose
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+**Application**
+- Python
+- Django REST Framework
 
-2.  Clone the project, `cd` to it in Terminal/Command Prompt and run the following:
+**CI/CD**
+- GitHub Actions
 
-```sh
+**Tooling**
+- AWS CLI
+- aws-vault
+
+---
+
+## 💻 Local Development
+
+The application runs locally using Docker and Docker Compose for consistent cross-platform development.
+
+### Requirements
+
+- Docker Desktop
+
+### Run Project Locally
+
+Clone the repository and run:
+
+```bash
 docker compose up
 ```
 
-3.  Browse the project at [http://127.0.0.1:8000/api/health-check/](http://127.0.0.1:8000/api/health-check/)
+Health endpoint:
 
-### Creating Superuser
+```
+http://127.0.0.1:8000/api/health-check/
+```
 
-To create a superuser to access the Django admin follow these steps.
+---
 
-1.  Run the below command and follow the in terminal instructions:
+## 👤 Create Django Superuser
 
-```sh
+To access the Django admin interface:
+
+```bash
 docker compose run --rm app sh -c "python manage.py createsuperuser"
 ```
 
-2.  Browse the Django admin at [http://127.0.0.1:8000/admin] and login.
+Admin URL:
 
-### Clearing Storage
+```
+http://127.0.0.1:8000/admin
+```
 
-To clear all storage (including the database) and start fresh:
+---
 
-```sh
+## 🧹 Reset Local Storage
+
+To remove all volumes and start fresh:
+
+```bash
 docker compose down --volumes
 docker compose up
 ```
 
-## Course Documentation
+---
 
-This section contains supplementary documentation for the course steps.
+## 🔐 AWS CLI Authentication
 
-### AWS CLI
+AWS CLI authentication is performed using **aws-vault** for improved credential security.
 
-#### AWS CLI Authentication
+Authenticate:
 
-This course uses [aws-vault](https://github.com/99designs/aws-vault) to authenticate with the AWS CLI in the terminal.
-
-To authenticate:
-
-```
+```bash
 aws-vault exec PROFILE --duration=8h
 ```
 
-Replace `PROFILE` with the name of the profile.
+List available profiles:
 
-To list profiles, run:
-
+```bash
+aws-vault list
 ```
+List configured AWS Vault profiles:
+
+```bash
 aws-vault list
 ```
 
-#### Task Exec
+---
 
-[ECS Exec](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html) is used for manually running commands directly on the running containers.
+## 🐳 ECS Exec — Container Shell Access
 
-To get shell access to the `ecs` task:
+ECS Exec can be used to run commands directly inside running containers for debugging and operational inspection.
 
+Example shell access command:
+
+```bash
+aws ecs execute-command \
+  --region REGION \
+  --cluster CLUSTER_NAME \
+  --task TASK_ID \
+  --container CONTAINER_NAME \
+  --interactive \
+  --command "/bin/sh"
 ```
-aws ecs execute-command --region REGION --cluster CLUSTER_NAME --task TASK_ID --container CONTAINER_NAME --interactive --command "/bin/sh"
-```
 
-Replace the following values in the above command:
+Replace:
 
-- `REGION`: The AWS region where the ECS cluster is setup.
-- `CLUSTER_NAME`: The name of the ECS cluster.
-- `TASK_ID`: The ID of the running ECS task which you want to connect to.
-- `CONTAINER_NAME`: The name of the container to run the command on.
+- `REGION` — AWS region where the ECS cluster is deployed
+- `CLUSTER_NAME` — ECS cluster name
+- `TASK_ID` — running task ID
+- `CONTAINER_NAME` — container name inside the task
 
-### Terraform Commands
+This is useful for live troubleshooting and runtime inspection.
 
-Below is a list of how to run the common commands via Docker Compose.
+---
 
-> Note: The below commands should be run from ther `infra/` directory of the project, and after authenticating with `aws-vault`.
+## 🏗 Terraform Commands (Containerized Execution)
 
-To run any Terraform command through Docker, use the syntax below:
+Terraform is executed through Docker to ensure consistent tooling versions and avoid local dependency drift.
 
-```
+**Run commands from the `infra/` directory after authenticating with aws-vault.**
+
+General syntax:
+
+```bash
 docker compose run --rm terraform -chdir=TF_DIR COMMAND
 ```
 
-Where `TF_DIR` is the directory containing the Terraform (`setup` or `deploy`) and `COMMAND` is the Terraform command (e.g. `plan`).
+Where:
 
-#### Get outputs from the setup Terraform
+- `TF_DIR` = Terraform directory (`setup` or `deploy`)
+- `COMMAND` = Terraform command (`init`, `plan`, `apply`, etc.)
 
+Example — run plan:
+
+```bash
+docker compose run --rm terraform -chdir=deploy plan
 ```
+
+### Get Terraform Outputs
+
+```bash
 docker compose run --rm terraform -chdir=setup output
 ```
 
-The output name must be specified if `sensitive = true` in the output definition, like this:
+If output is marked sensitive:
 
+```bash
+docker compose run --rm terraform -chdir=setup output OUTPUT_NAME
 ```
-docker compose run --rm terraform -chdir=setup output cd_user_access_key_secret
-```
 
-### GitHub Actions Variables
+---
 
-This section lists the GitHub Actions variables which need to be configured on the GitHub project.
+## 🔄 CI/CD Pipeline Variables — GitHub Actions
 
-> Note: This is only applicable if using GitHub Actions, if you're using GitLab, see [GitLab CI/CD Variables](#gitlab-cicd-variables) below.
+The CI/CD pipeline requires repository variables and secrets to enable automated builds and deployments.
 
-If using GitHub Actions, variables are set as either **Variables** (clear text and readable) or **Secrets** (values hidden in logs).
+Variables (non-secret):
 
-Variables:
+- `AWS_ACCESS_KEY_ID` — CI deployment IAM user access key (Terraform output)
+- `AWS_ACCOUNT_ID` — AWS account ID
+- `DOCKERHUB_USER` — Docker Hub username
+- `ECR_REPO_APP` — Application image repository URL
+- `ECR_REPO_PROXY` — Proxy image repository URL
 
-- `AWS_ACCESS_KEY_ID`: Access key for the CD AWS IAM user that is created by Terraform and output as `cd_user_access_key_id`.
-- `AWS_ACCOUNT_ID`: AWS Account ID taken from AWS directly.
-- `DOCKERHUB_USER`: Username for [Docker Hub](https://hub.docker.com/) for avoiding Docker Pull rate limit issues.
-- `ECR_REPO_APP`: URL for the Docker repo containing the app image output by Terraform as `ecr_repo_app`.
-- `ECR_REPO_PROXY`: URL for the Docker repo containing the proxy image output by Terraform as `ecr_repo_proxy`.
+Secrets (masked):
 
-Secrets:
+- `AWS_SECRET_ACCESS_KEY` — CI deployment IAM secret key
+- `DOCKERHUB_TOKEN` — Docker Hub access token
+- `TF_VAR_DB_PASSWORD` — Database password variable
+- `TF_VAR_DJANGO_SECRET_KEY` — Django secret key variable
 
-- `AWS_SECRET_ACCESS_KEY`: Secret key for `AWS_ACCESS_KEY_ID` set in variables, output by Terraform as `cd_user_access_key_secret`.
-- `DOCKERHUB_TOKEN`: Token created in `DOCKERHUB_USER` in [Docker Hub](https://hub.docker.com/).
-- `TF_VAR_DB_PASSWORD`: Password for the RDS database (make something up).
-- `TF_VAR_DJANGO_SECRET_KEY`: Secret key for the Django app (make something up).
+These values are configured in the repository CI/CD settings.
 
-### GitLab CI/CD Variables
+---
 
-This section lists the GitLab CI/CD variables which must be configured to run jobs.
+## 🔄 CI/CD Pipeline Variables — GitLab (Optional)
 
-> Note: This is only applicable if you are using GitLab CI/CD. If you are using GitHub Actions, see [#github-actions-variables](GitHub Actions Variables) above.
+If using GitLab CI/CD instead of GitHub Actions, equivalent variables must be configured in GitLab project settings.
 
-In GitLab CI/CD, all variables are set under **Variables**, and optionally set as masked (secrets hidden from output) and/or protected (restricted to protected branches).
+Variables can be marked as:
 
-Each variable and their state is listed below:
+- Masked — hidden in logs
+- Protected — restricted to protected branches
 
-- `AWS_ACCESS_KEY_ID`: Access key for the CD AWS IAM user that is created by Terraform and output as `cd_user_access_key_id`.
-- `AWS_ACCOUNT_ID`: AWS Account ID taken from AWS directly.
-- `DOCKERHUB_USER`: Username for [Docker Hub](https://hub.docker.com/) for avoiding Docker Pull rate limit issues.
-- `ECR_REPO_APP`: URL for the Docker repo containing the app image output by Terraform as `ecr_repo_app`.
-- `ECR_REPO_PROXY`: URL for the Docker repo containing the proxy image output by Terraform as `ecr_repo_proxy`.
-- `AWS_SECRET_ACCESS_KEY` (**Masked**): Secret key for `AWS_ACCESS_KEY_ID` set in variables, output by Terraform as `cd_user_access_key_secret`.
-- `DOCKERHUB_TOKEN` (**Masked**): Token created in `DOCKERHUB_USER` in [Docker Hub](https://hub.docker.com/).
-- `TF_VAR_db_password` (**Masked**): Password for the RDS database (make something up).
-- `TF_VAR_django_secret_key` (**Masked**, **Protected**): Secret key for the Django app (make something up).
+Only required when running the GitLab pipeline variant.
+Repository CI/CD variables must be configured with appropriate masking and protection settings depending on platform.
 
-## Section Notes and Resources
+Required variables typically include:
 
-### Software Requirements
+- `AWS_ACCESS_KEY_ID` — CI deployment IAM access key (Terraform output)
+- `AWS_ACCOUNT_ID` — AWS account identifier
+- `DOCKERHUB_USER` — Docker Hub username
+- `ECR_REPO_APP` — Application image repository URL
+- `ECR_REPO_PROXY` — Proxy image repository URL
+- `AWS_SECRET_ACCESS_KEY` (masked) — CI deployment IAM secret key
+- `DOCKERHUB_TOKEN` (masked) — Docker Hub access token
+- `TF_VAR_db_password` (masked) — Database password variable
+- `TF_VAR_django_secret_key` (masked/protected) — Django secret key variable
 
-#### Checking Each Dependency
+Always store sensitive values as masked secrets in CI/CD settings.
 
-Check docker is running:
+---
 
-```sh
+## 🧪 Environment & Tooling Verification
+
+Use the following commands to verify required tooling is installed and available:
+
+Check Docker:
+
+```bash
 docker --version
 ```
 
-Check aws-vault installed:
+Check Docker Compose:
 
-```sh
+```bash
+docker compose --version
+```
+
+Check aws-vault:
+
+```bash
 aws-vault --version
 ```
 
 Check AWS CLI:
 
-```sh
+```bash
 aws --version
 ```
 
-Check AWS CLI Systems Manager:
+Check Session Manager plugin:
 
-```sh
+```bash
 session-manager-plugin
 ```
 
-Check docker compose:
+---
 
-```sh
-docker compose --version
-```
+## 🔧 Git Configuration (Optional)
 
-Configure Git:
+If setting up a new development environment:
 
-```sh
-git config --global user.email email@example.com
-git config --global user.name "User Name" 
+```bash
+git config --global user.email "your-email@example.com"
+git config --global user.name "Your Name"
 git config --global push.autoSetupRemote true
 ```
 
-## Other courses
+---
 
-Check out our courses on [londonappdeveloper.com](https://londonappdeveloper.com).
+## 💰 Cost & Deployment Notes
 
-Or find them below:
+This infrastructure can exceed AWS free-tier limits depending on configuration choices.
 
-- [Python for Absolute Beginners](https://londonapp.dev/c4)
-- [Build a Backend REST API with Python & Django REST Framework - Beginner](https://londonapp.dev/c1)
-- [Build a Backend REST API with Python & Django REST Framework - Advanced](https://londonapp.dev/c2)
-- [Deploy a Serverless Django App on Google App Engine](https://londonapp.dev/c5)
+For cost-controlled testing:
 
-New Text
+- use smaller instance sizes
+- reduce replica counts
+- disable optional components
+- destroy environments after validation using Terraform
 
-New Text 2
+Infrastructure is designed to be reproducible and safely recreated.
 
-New text 3
+---
+
+## 🔮 Future Improvements
+
+Planned or possible enhancements:
+
+- Autoscaling policies
+- Monitoring dashboards and alerts
+- Blue/green or canary deployments
+- Secrets Manager integration
+- Automated rollback stages
+- Expanded observability stack
+
+---
+
+## 📌 Portfolio Context
+
+This repository is maintained as a DevOps portfolio project demonstrating Infrastructure-as-Code, containerized application deployment, CI/CD automation, and cloud environment reproducibility practices.

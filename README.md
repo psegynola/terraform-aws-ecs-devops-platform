@@ -310,7 +310,33 @@ Planned or possible enhancements:
 - Expanded observability stack
 
 ---
+## Troubleshooting & Incident Notes
 
+During CI/CD deployment, Terraform backend initialization failed with an S3 `HeadObject 403` error when reading remote state.
+
+Root cause:
+The IAM policy for the CI/CD user allowed access only to prefixed object paths:
+
+- `tf-state-deploy/*`
+
+But the Terraform backend key used the exact object name:
+
+- `tf-state-deploy`
+
+Because S3 object permissions are exact-match, this resulted in access being denied during Terraform state refresh in the pipeline.
+
+Resolution:
+- Verified CI identity using `aws sts get-caller-identity` inside GitHub Actions
+- Reproduced failure using `aws s3api head-object`
+- Inspected attached IAM policy versions via AWS CLI
+- Updated IAM policy to allow both:
+  - exact object key access
+  - prefixed path access
+- Created new policy version and set as default
+- Re-ran pipeline successfully
+
+This highlights the importance of exact S3 object ARN matching in Terraform backend IAM policies.
+---
 ## Portfolio Context
 
 This repository is maintained as a DevOps portfolio project demonstrating Infrastructure-as-Code, containerized application deployment, CI/CD automation, and cloud environment reproducibility practices.

@@ -335,7 +335,6 @@ Resolution:
 - Created new policy version and set as default
 - Re-ran pipeline successfully
 
-This highlights the importance of exact S3 object ARN matching in Terraform backend IAM policies.
 ---
 ## Portfolio Context
 

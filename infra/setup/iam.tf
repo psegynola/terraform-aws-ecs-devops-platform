@@ -25,7 +25,13 @@ data "aws_iam_policy_document" "tf_backend" {
     effect  = "Allow"
     actions = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
     resources = [
+        # allow the exact state file object
+      "arn:aws:s3:::${var.tf_state_bucket}/tf-state-deploy",
+
+      # allow variants/prefixes if you ever use them
       "arn:aws:s3:::${var.tf_state_bucket}/tf-state-deploy/*",
+
+      # if you use env-specific state paths
       "arn:aws:s3:::${var.tf_state_bucket}/tf-state-deploy-env/*"
     ]
   }

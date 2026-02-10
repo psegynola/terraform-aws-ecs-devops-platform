@@ -8,7 +8,7 @@ Originally built through guided DevOps training and extended into a portfolio pr
 
 ---
 
-## 🚀 What This Project Demonstrates
+## What This Project Demonstrates
 
 - Infrastructure provisioning with Terraform
 - Modular Infrastructure-as-Code structure
@@ -23,7 +23,7 @@ Originally built through guided DevOps training and extended into a portfolio pr
 
 ---
 
-## 🧰 Technology Stack
+## Technology Stack
 
 **Infrastructure & Cloud**
 - Terraform
@@ -46,7 +46,7 @@ Originally built through guided DevOps training and extended into a portfolio pr
 
 ---
 
-## 💻 Local Development
+## Local Development
 
 The application runs locally using Docker and Docker Compose for consistent cross-platform development.
 
@@ -70,7 +70,7 @@ http://127.0.0.1:8000/api/health-check/
 
 ---
 
-## 👤 Create Django Superuser
+## Create Django Superuser
 
 To access the Django admin interface:
 
@@ -86,7 +86,7 @@ http://127.0.0.1:8000/admin
 
 ---
 
-## 🧹 Reset Local Storage
+## Reset Local Storage
 
 To remove all volumes and start fresh:
 
@@ -97,7 +97,7 @@ docker compose up
 
 ---
 
-## 🔐 AWS CLI Authentication
+## AWS CLI Authentication
 
 AWS CLI authentication is performed using **aws-vault** for improved credential security.
 
@@ -120,7 +120,7 @@ aws-vault list
 
 ---
 
-## 🐳 ECS Exec — Container Shell Access
+## ECS Exec — Container Shell Access
 
 ECS Exec can be used to run commands directly inside running containers for debugging and operational inspection.
 
@@ -147,7 +147,7 @@ This is useful for live troubleshooting and runtime inspection.
 
 ---
 
-## 🏗 Terraform Commands (Containerized Execution)
+## Terraform Commands (Containerized Execution)
 
 Terraform is executed through Docker to ensure consistent tooling versions and avoid local dependency drift.
 
@@ -184,7 +184,7 @@ docker compose run --rm terraform -chdir=setup output OUTPUT_NAME
 
 ---
 
-## 🔄 CI/CD Pipeline Variables — GitHub Actions
+## CI/CD Pipeline Variables — GitHub Actions
 
 The CI/CD pipeline requires repository variables and secrets to enable automated builds and deployments.
 
@@ -207,7 +207,7 @@ These values are configured in the repository CI/CD settings.
 
 ---
 
-## 🔄 CI/CD Pipeline Variables — GitLab (Optional)
+## CI/CD Pipeline Variables — GitLab (Optional)
 
 If using GitLab CI/CD instead of GitHub Actions, equivalent variables must be configured in GitLab project settings.
 
@@ -235,7 +235,7 @@ Always store sensitive values as masked secrets in CI/CD settings.
 
 ---
 
-## 🧪 Environment & Tooling Verification
+## Environment & Tooling Verification
 
 Use the following commands to verify required tooling is installed and available:
 
@@ -271,7 +271,7 @@ session-manager-plugin
 
 ---
 
-## 🔧 Git Configuration (Optional)
+## Git Configuration (Optional)
 
 If setting up a new development environment:
 
@@ -283,7 +283,7 @@ git config --global push.autoSetupRemote true
 
 ---
 
-## 💰 Cost & Deployment Notes
+## Cost & Deployment Notes
 
 This infrastructure can exceed AWS free-tier limits depending on configuration choices.
 
@@ -298,7 +298,7 @@ Infrastructure is designed to be reproducible and safely recreated.
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
 Planned or possible enhancements:
 
@@ -311,6 +311,6 @@ Planned or possible enhancements:
 
 ---
 
-## 📌 Portfolio Context
+## Portfolio Context
 
 This repository is maintained as a DevOps portfolio project demonstrating Infrastructure-as-Code, containerized application deployment, CI/CD automation, and cloud environment reproducibility practices.

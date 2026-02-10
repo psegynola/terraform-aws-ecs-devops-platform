@@ -310,7 +310,6 @@ Planned or possible enhancements:
 - Expanded observability stack
 
 ---
-New Commit
 
 ## Portfolio Context
 

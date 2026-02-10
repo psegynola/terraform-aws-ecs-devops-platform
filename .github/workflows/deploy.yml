@@ -39,6 +39,14 @@ jobs:
           docker build --compress -t ${{ vars.ECR_REPO_PROXY }}:$GITHUB_SHA proxy/
           docker push ${{ vars.ECR_REPO_PROXY }}:$GITHUB_SHA
 
+      - name: Debug AWS identity + state access (runner)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws sts get-caller-identity
+          aws s3api head-object --bucket fdivine-recipe-app-tf-state --key tf-state-deploy
+
       - name: Terraform Apply
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}

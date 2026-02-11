@@ -23,7 +23,14 @@ Originally built through guided DevOps training and extended into a portfolio pr
 
 ---
 ## Architecture Diagram
+This platform is deployed using Terraform and GitHub Actions CI/CD.  
+Containers are built and pushed to Amazon ECR, then deployed to ECS behind an Application Load Balancer.  
+Infrastructure state is stored in S3 with DynamoDB locking.
 
+**Legend**
+- Solid lines = runtime traffic
+- Dashed lines = CI/CD or control plane flows
+  
 ![Architecture](docs/architecture.jpg)
 
 ## Technology Stack

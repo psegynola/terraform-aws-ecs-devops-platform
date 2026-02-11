@@ -22,6 +22,9 @@ Originally built through guided DevOps training and extended into a portfolio pr
 - Reproducible environment setup
 
 ---
+## Architecture Diagram
+
+![Architecture](docs/architecture.jpg)
 
 ## Technology Stack
 
